@@ -107,6 +107,7 @@ jobs:
             gcc --version &&^
             cd ${{ env.libraryName }} &&^
             cmake.exe -LH -G"MinGW Makefiles" ^
+            -DCMAKE_CXX_FLAGS="-DMINGW_HAS_SECURE_API" ^
             -DCMAKE_BUILD_TYPE=Release ^
             -DBUILD_SHARED_LIBS=OFF ^
             -DCMAKE_INSTALL_PREFIX="cmake-build/${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
