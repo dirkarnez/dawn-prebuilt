@@ -17,13 +17,13 @@ jobs:
         #     name: "x86_64-8.1.0-release-posix-seh-rt_v6-rev0",
         #     url: "https://github.com/dirkarnez/cpp-tools/raw/main/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z"
         #   }
-        - {
-            name: "winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r1",
-            url: "https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-12.0.1-9.0.0-r1/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r1.zip"
-          }
         # - {
-        #     name: "msvc2019"
+        #     name: "winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r1",
+        #     url: "https://github.com/brechtsanders/winlibs_mingw/releases/download/11.2.0-12.0.1-9.0.0-r1/winlibs-x86_64-posix-seh-gcc-11.2.0-mingw-w64-9.0.0-r1.zip"
         #   }
+        - {
+            name: "msvc2022"
+          }
 
     runs-on: windows-latest
     env:
@@ -79,21 +79,20 @@ jobs:
       #     curl https://github.com/dirkarnez/zlib-prebuilt/releases/download/v1.2.13/zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0.zip -L -O &&^
       #     7z.exe x zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0.zip -o"zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0"
           
-      # - name: set PATH, check mingw version, cmake generate, build and install
-      #   if: ${{ !matrix.compiler.url }}
-      #   shell: cmd
-      #   run: |
-      #       set PATH=^
-      #       ${{ github.workspace }}\mingw64;^
-      #       ${{ github.workspace }}\mingw64\bin;^
-      #       ${{ github.workspace }}\cmake-3.24.0-windows-x86_64\bin;
-      #       set CD_LINUX=%CD:\=/%
-      #       cd libsoda-cxx &&^
-      #       cmake.exe -G "Visual Studio 17 2022" -A x64 ^
-      #       -DCMAKE_BUILD_TYPE=Release ^
-      #       -DBUILD_SHARED_LIBS=OFF ^
-      #       -DCMAKE_INSTALL_PREFIX="cmake-build/${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
-      #       cd cmake-build && cmake --build . --config Release && cmake --install . 
+      - name: set PATH, check mingw version, cmake generate, build and install
+        if: ${{ !matrix.compiler.url }}
+        shell: cmd
+        run: |
+            set PATH=^
+            %PATH%;^
+            ${{ github.workspace }}\cmake-3.24.0-windows-x86_64\bin;
+            set CD_LINUX=%CD:\=/%
+            cd ${{ env.libraryName }} &&^
+            cmake.exe -G "Visual Studio 17 2022" -A x64 ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DBUILD_SHARED_LIBS=OFF ^
+            -DCMAKE_INSTALL_PREFIX="cmake-build/${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
+            cd cmake-build && cmake --build . --config Release && cmake --install . 
             
       - name: set PATH, check mingw version, cmake generate, build and install
         if: ${{ matrix.compiler.url }}
