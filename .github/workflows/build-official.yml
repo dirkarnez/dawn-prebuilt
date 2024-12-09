@@ -82,7 +82,7 @@ jobs:
     container: ${{ matrix.container }}
     env:
       SCCACHE_GHA_ENABLED: "true"
-      tagName: 54ad6448697e6c6da09eceabfae93f1c234bbc0e
+      tagName: d37aba45730beefae1083eb85447436559ad5995
     steps:
     - uses: actions/checkout@v4
       with:
