@@ -82,9 +82,14 @@ jobs:
     container: ${{ matrix.container }}
     env:
       SCCACHE_GHA_ENABLED: "true"
-
+      tagName: 54ad6448697e6c6da09eceabfae93f1c234bbc0e
     steps:
     - uses: actions/checkout@v4
+      with:
+        repository: google/dawn
+        ref: ${{ env.tagName }}
+        path: dawn
+        submodules: true
 
     - name: Set up dependencies on linux
       if: matrix.container == 'dockcross/manylinux_2_28-x64:latest'
@@ -124,13 +129,13 @@ jobs:
       uses: thedoctor0/zip-release@master
       with:
         type: 'zip'
-        directory: "out/${{ matrix.build_type }}"
+        directory: "dawn/out/${{ matrix.build_type }}"
         filename: "dawn-${{ github.ref_name }}-${{ matrix.build_type }}-${{ matrix.toolchain }}-${{ matrix.os }}.zip"
       
     - name: Release prebuilt
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "out/${{ matrix.build_type }}/dawn-${{ github.ref_name }}-${{ matrix.build_type }}-${{ matrix.toolchain }}-${{ matrix.os }}.zip"
+        artifacts: "dawn/out/${{ matrix.build_type }}/dawn-${{ github.ref_name }}-${{ matrix.build_type }}-${{ matrix.toolchain }}-${{ matrix.os }}.zip"
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
 
