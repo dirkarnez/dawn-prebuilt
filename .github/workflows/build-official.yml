@@ -88,7 +88,6 @@ jobs:
       with:
         repository: google/dawn
         ref: ${{ env.tagName }}
-        path: dawn
         submodules: true
 
     - name: Set up dependencies on linux
@@ -129,13 +128,13 @@ jobs:
       uses: thedoctor0/zip-release@master
       with:
         type: 'zip'
-        directory: "dawn/out/${{ matrix.build_type }}"
+        directory: "out/${{ matrix.build_type }}"
         filename: "dawn-${{ github.ref_name }}-${{ matrix.build_type }}-${{ matrix.toolchain }}-${{ matrix.os }}.zip"
       
     - name: Release prebuilt
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "dawn/out/${{ matrix.build_type }}/dawn-${{ github.ref_name }}-${{ matrix.build_type }}-${{ matrix.toolchain }}-${{ matrix.os }}.zip"
+        artifacts: "out/${{ matrix.build_type }}/dawn-${{ github.ref_name }}-${{ matrix.build_type }}-${{ matrix.toolchain }}-${{ matrix.os }}.zip"
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
 
