@@ -82,7 +82,7 @@ jobs:
       - name: set PATH, check mingw version, cmake generate, build and install
         if: ${{ !matrix.compiler.url }}
         shell: cmd
-        wokring-directory: dawn
+        working-directory: dawn
         run: ..\local-msvc-build.cmd
             
       # - name: set PATH, check mingw version, cmake generate, build and install
