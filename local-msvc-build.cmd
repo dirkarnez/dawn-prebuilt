@@ -1,6 +1,6 @@
 @REM run as Administrator
 @echo off
-cd /d %~dp0
+
 set DOWNLOADS_DIR=%USERPROFILE%\Downloads
 set DOWNLOADS_DIR_LINUX=%DOWNLOADS_DIR:\=/%
 
