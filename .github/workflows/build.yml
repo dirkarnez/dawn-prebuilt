@@ -27,18 +27,14 @@ jobs:
 
     runs-on: windows-latest
     env:
-      libraryName: dawn
-      cmakeInstallationPath: dawn-installation
-      tagName: 54ad6448697e6c6da09eceabfae93f1c234bbc0e
+      tagName: 0c4e4be342208e621fc969e501d44b3b69fb61eb
     steps:
-    
-      - uses: actions/checkout@v4
-        with:
-          repository: google/dawn
-          ref: ${{ env.tagName }}
-          path: ${{ env.libraryName }}
-          submodules: true
-          
+      - shell: bash
+        run: |
+            git clone --recurse-submodules https://dawn.googlesource.com/dawn && \
+            cd dawn && \
+            git checkout ${{ env.tagName }}
+        
       - name: download compiler
         if: ${{  matrix.compiler.url }}
         shell: cmd
@@ -48,11 +44,17 @@ jobs:
           
       - name: curl cmake-3.24.0-windows-x86_64.zip
         shell: cmd
-        run: curl https://github.com/Kitware/CMake/releases/download/v3.24.0/cmake-3.24.0-windows-x86_64.zip -L --output cmake-3.24.0-windows-x86_64.zip && dir && 7z.exe x cmake-3.24.0-windows-x86_64.zip
+        run: |
+            curl https://github.com/Kitware/CMake/releases/download/v3.24.0/cmake-3.24.0-windows-x86_64.zip ^
+            -L --output cmake-3.24.0-windows-x86_64.zip &&^
+            7z.exe x cmake-3.24.0-windows-x86_64.zip -o"%USERPROFILE%\Downloads"
 
       - name: curl PortableGit-2.38.1-64-bit.7z.exe
         shell: cmd
-        run: curl https://github.com/git-for-windows/git/releases/download/v2.38.1.windows.1/PortableGit-2.38.1-64-bit.7z.exe -L --output PortableGit-2.38.1-64-bit.7z.exe && dir && 7z.exe x PortableGit-2.38.1-64-bit.7z.exe -o"PortableGit-2.38.1-64-bit"
+        run: |
+            curl https://github.com/git-for-windows/git/releases/download/v2.38.1.windows.1/PortableGit-2.38.1-64-bit.7z.exe ^
+            -L --output PortableGit-2.38.1-64-bit.7z.exe &&^
+            7z.exe x PortableGit-2.38.1-64-bit.7z.exe -o"%USERPROFILE%\Downloads\PortableGit-2.38.1-64-bit"
       
       # - shell: cmd
       #   run: |
@@ -82,38 +84,25 @@ jobs:
       - name: set PATH, check mingw version, cmake generate, build and install
         if: ${{ !matrix.compiler.url }}
         shell: cmd
-        run: |
-            set PATH=^
-            %PATH%;^
-            ${{ github.workspace }}\cmake-3.24.0-windows-x86_64\bin;
-            set CD_LINUX=%CD:\=/%
-            cd ${{ env.libraryName }} &&^
-            cmake.exe -G "Visual Studio 17 2022" -A x64 ^
-            -DCMAKE_BUILD_TYPE=Release ^
-            -DBUILD_SHARED_LIBS=OFF ^
-            -DCMAKE_INSTALL_PREFIX="cmake-build/${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
-            cd cmake-build &&^
-            cmake --build . --config Release &&^
-            echo done &&^
-            cmake --install . 
+        run: .\local-msvc-build.cmd
             
-      - name: set PATH, check mingw version, cmake generate, build and install
-        if: ${{ matrix.compiler.url }}
-        shell: cmd
-        run: |
-            set PATH=^
-            ${{ github.workspace }}\mingw64;^
-            ${{ github.workspace }}\mingw64\bin;^
-            ${{ github.workspace }}\cmake-3.24.0-windows-x86_64\bin;
-            set CD_LINUX=%CD:\=/%
-            gcc --version &&^
-            cd ${{ env.libraryName }} &&^
-            cmake.exe -LH -G"MinGW Makefiles" ^
-            -DCMAKE_CXX_FLAGS="-DMINGW_HAS_SECURE_API" ^
-            -DCMAKE_BUILD_TYPE=Release ^
-            -DBUILD_SHARED_LIBS=OFF ^
-            -DCMAKE_INSTALL_PREFIX="cmake-build/${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
-            cd cmake-build && ( cmake --build . --config Release && cmake --install . && cd .. && cmake.exe -LH -G"MinGW Makefiles" -B./cmake-build > "cmake-build\${{ env.cmakeInstallationPath }}\cmake-lh-export.txt" || type .\CMakeFiles\CMakeError.log )
+      # - name: set PATH, check mingw version, cmake generate, build and install
+      #   if: ${{ matrix.compiler.url }}
+      #   shell: cmd
+      #   run: |
+      #       set PATH=^
+      #       ${{ github.workspace }}\mingw64;^
+      #       ${{ github.workspace }}\mingw64\bin;^
+      #       ${{ github.workspace }}\cmake-3.24.0-windows-x86_64\bin;
+      #       set CD_LINUX=%CD:\=/%
+      #       gcc --version &&^
+      #       cd ${{ env.libraryName }} &&^
+      #       cmake.exe -LH -G"MinGW Makefiles" ^
+      #       -DCMAKE_CXX_FLAGS="-DMINGW_HAS_SECURE_API" ^
+      #       -DCMAKE_BUILD_TYPE=Release ^
+      #       -DBUILD_SHARED_LIBS=OFF ^
+      #       -DCMAKE_INSTALL_PREFIX="cmake-build/${{ env.cmakeInstallationPath }}" -B./cmake-build &&^
+      #       cd cmake-build && ( cmake --build . --config Release && cmake --install . && cd .. && cmake.exe -LH -G"MinGW Makefiles" -B./cmake-build > "cmake-build\${{ env.cmakeInstallationPath }}\cmake-lh-export.txt" || type .\CMakeFiles\CMakeError.log )
             
   # -DOpenSSL_DIR="%CD_LINUX%/openssl-v3.1.3-x86_64-8.1.0-release-posix-seh-rt_v6-rev0" ^
   # -DZLIB_ROOT="%CD_LINUX%/zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0" ^
@@ -123,12 +112,12 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "${{ env.libraryName }}/cmake-build"
-          filename: "${{ env.libraryName }}-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
+          directory: "dawn/cmake-build/installation"
+          filename: "dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
         
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ env.libraryName }}/cmake-build/${{ env.libraryName }}-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
+          artifacts: "dawn/cmake-build/installation/dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
