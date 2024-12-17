@@ -1,10 +1,10 @@
 name: CI
 
-on:
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-      - '*' # Push events to matching v*, i.e. v1.0, v20.15.10
+# on:
+#   push:
+#     # Sequence of patterns matched against refs/tags
+#     tags:
+#       - '*' # Push events to matching v*, i.e. v1.0, v20.15.10
       
 concurrency:
   # Use github.run_id on main branch
