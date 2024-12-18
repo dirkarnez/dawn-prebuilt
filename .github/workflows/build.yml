@@ -141,12 +141,12 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "dawn/cmake-build/installation"
+          directory: "/c/dawn/cmake-build/installation"
           filename: "dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
         
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dawn/cmake-build/installation/dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
+          artifacts: "/c/dawn/cmake-build/installation/dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
