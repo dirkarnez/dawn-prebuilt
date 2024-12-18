@@ -34,21 +34,30 @@ jobs:
         
       - uses: actions/checkout@v4
       
-      # - uses: actions/checkout@v4
-      #   with:
-      #     repository: google/dawn
-      #     ref: ${{ env.tagName }}
-      #     path: "C:\\dawn"
-      #     submodules: true
+      - uses: actions/checkout@v4
+        with:
+          repository: google/dawn
+          ref: ${{ env.tagName }}
+          path: "C:\\dawn"
+          submodules: false
+
+    # # Clone the repo as "dawn"
+    # git clone https://dawn.googlesource.com/dawn dawn && cd dawn
       
+      # Fetch dependencies (lose equivalent of gclient sync)
       - shell: bash
+        working-directory: "C:\\dawn"
         run: |
-          git config --global user.name "dirkarnez" && \
-          git config --global user.email "smalldirkalex@gmail.com" && \
-          git config --global http.sslBackend openssl && \
-          git config --global credential.helper "" && \
-          cd /C/ && \
-          git clone --depth=1 --recurse-submodules https://dawn.googlesource.com/dawn
+          python tools/fetch_dawn_dependencies.py --use-test-deps
+          
+      # - shell: bash
+      #   run: |
+      #     git config --global user.name "dirkarnez" && \
+      #     git config --global user.email "smalldirkalex@gmail.com" && \
+      #     git config --global http.sslBackend openssl && \
+      #     git config --global credential.helper "" && \
+      #     cd /C/ && \
+      #     git clone --depth=1 --recurse-submodules https://dawn.googlesource.com/dawn
 
       - shell: cmd
         continue-on-error: true
