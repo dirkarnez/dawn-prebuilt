@@ -38,7 +38,7 @@ jobs:
         with:
           repository: google/dawn
           ref: ${{ env.tagName }}
-          path: "C:\dawn"
+          path: "C:\\dawn"
           submodules: true
         
       - name: download compiler
@@ -90,7 +90,7 @@ jobs:
       - name: set PATH, check mingw version, cmake generate, build and install
         if: ${{ !matrix.compiler.url }}
         shell: cmd
-        working-directory: C:\dawn
+        working-directory: 'C:\\dawn'
         run: ${{ github.workspace }}\local-msvc-build.cmd
             
       # - name: set PATH, check mingw version, cmake generate, build and install
