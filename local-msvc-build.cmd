@@ -18,6 +18,8 @@ cmake.exe -G "Visual Studio 17 2022" -A x64 ^
 -DBUILD_SHARED_LIBS=OFF ^
 -DDAWN_FETCH_DEPENDENCIES=ON  ^
 -DDAWN_ENABLE_INSTALL=ON  ^
+-DENABLE_D3D11=OFF ^
+-DENABLE_D3D12=OFF ^
 -DCMAKE_INSTALL_PREFIX="cmake-build/installation" -B./cmake-build &&^
 cd cmake-build &&^
 cmake --build . --config Release &&^
