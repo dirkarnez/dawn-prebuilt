@@ -49,6 +49,10 @@ jobs:
           git config --global credential.helper "" && \
           cd /C/ && \
           git clone --depth=1 --recurse-submodules https://dawn.googlesource.com/dawn
+
+      - shell: cmd
+        continue-on-error: true
+        run: dir C:\
         
       - name: download compiler
         if: ${{  matrix.compiler.url }}
