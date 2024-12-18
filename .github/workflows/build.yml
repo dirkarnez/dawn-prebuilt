@@ -34,12 +34,21 @@ jobs:
         
       - uses: actions/checkout@v4
       
-      - uses: actions/checkout@v4
-        with:
-          repository: google/dawn
-          ref: ${{ env.tagName }}
-          path: "C:\\dawn"
-          submodules: true
+      # - uses: actions/checkout@v4
+      #   with:
+      #     repository: google/dawn
+      #     ref: ${{ env.tagName }}
+      #     path: "C:\\dawn"
+      #     submodules: true
+      
+      - shell: bash
+        run: |
+          git config --global user.name "dirkarnez" && \
+          git config --global user.email "smalldirkalex@gmail.com" && \
+          git config --global http.sslBackend openssl && \
+          git config --global credential.helper "" && \
+          cd /C/ && \
+          git clone --depth=1 --recurse-submodules https://dawn.googlesource.com/dawn
         
       - name: download compiler
         if: ${{  matrix.compiler.url }}
