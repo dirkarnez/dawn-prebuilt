@@ -75,7 +75,11 @@ jobs:
             curl https://github.com/git-for-windows/git/releases/download/v2.38.1.windows.1/PortableGit-2.38.1-64-bit.7z.exe ^
             -L --output PortableGit-2.38.1-64-bit.7z.exe &&^
             7z.exe x PortableGit-2.38.1-64-bit.7z.exe -o"%USERPROFILE%\Downloads\PortableGit-2.38.1-64-bit"
-      
+            
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 20348
+          
       # - shell: cmd
       #   run: |
       #     cd /d "${{ github.workspace }}\cmake-3.24.0-windows-x86_64\share\cmake-3.24\Modules\" &&^
@@ -106,6 +110,10 @@ jobs:
         shell: cmd
         working-directory: 'C:\\dawn'
         run: ${{ github.workspace }}\local-msvc-build.cmd
+
+      - shell: cmd
+        continue-on-error: true
+        run: dir C:\
             
       # - name: set PATH, check mingw version, cmake generate, build and install
       #   if: ${{ matrix.compiler.url }}
