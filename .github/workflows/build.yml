@@ -29,13 +29,16 @@ jobs:
     env:
       tagName: 0c4e4be342208e621fc969e501d44b3b69fb61eb
     steps:
+      - shell: cmd
+        run: dir C:\
+        
       - uses: actions/checkout@v4
       
       - uses: actions/checkout@v4
         with:
           repository: google/dawn
           ref: ${{ env.tagName }}
-          path: dawn
+          path: "C:\dawn"
           submodules: true
         
       - name: download compiler
@@ -83,16 +86,12 @@ jobs:
       #   run: |
       #     curl https://github.com/dirkarnez/zlib-prebuilt/releases/download/v1.2.13/zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0.zip -L -O &&^
       #     7z.exe x zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0.zip -o"zlib-v1.2.13-mingw64-x86_64-posix-seh-rev0-8.1.0"
-      
-      - shell: cmd
-        run: dir
         
       - name: set PATH, check mingw version, cmake generate, build and install
         if: ${{ !matrix.compiler.url }}
         shell: cmd
-        working-directory: dawn
-        run: |
-          ..\local-msvc-build.cmd
+        working-directory: C:\dawn
+        run: ${{ github.workspace }}\local-msvc-build.cmd
             
       # - name: set PATH, check mingw version, cmake generate, build and install
       #   if: ${{ matrix.compiler.url }}
