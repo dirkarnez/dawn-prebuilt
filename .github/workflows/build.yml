@@ -145,8 +145,8 @@ jobs:
           filename: "dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
         
       - name: Release prebuilt
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "/c/dawn/cmake-build/installation/dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
+          artifacts: "C:\\dawn\\cmake-build\\installation\\dawn-${{ github.ref_name }}-${{ matrix.compiler.name }}.zip"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
